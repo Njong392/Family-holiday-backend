@@ -21,7 +21,7 @@ const signupUser = async (req, res) => {
         //create a token
         const token = createToken(user._id)
 
-        res.status(200).json({email, token})
+        res.status(200).json({email, token, id:user._id})
     } catch(error){
         res.status(400).json({error: error.message})
     }
@@ -37,55 +37,56 @@ const loginUser = async (req, res) => {
         //create a token
         const token = createToken(user._id)
 
-        res.status(200).json({email, token})
+        res.status(200).json({email, token, id:user._id})
+        
     } catch(error){
         res.status(400).json({error: error.message})
     }
 }
 
-//update a user
+//update a user with host info
 const updateHost = async (req, res) => {
     req.params = req.user._id
 
-    let {hobby, allergy, language, numberOfPeople, cuisine,bio,  image } = req.body
+    let {hobby, allergy, language, adults,children, cuisine,bio,  image } = req.body
 
-    let emptyFields = []
+    // let emptyFields = []
 
-    if(!hobby){
-        emptyFields.push('hobby')
-    }
+    // if(!hobby){
+    //     emptyFields.push('hobby')
+    // }
 
-    if(!allergy){
-        emptyFields.push('allergy')
-    }
+    // if(!allergy){
+    //     emptyFields.push('allergy')
+    // }
 
-    if(!language){
-        emptyFields.push('language')
-    }
+    // if(!language){
+    //     emptyFields.push('language')
+    // }
 
-    if(!numberOfPeople){
-        emptyFields.push('numberOfPeople')
-    }
+    // if(!numberOfPeople){
+    //     emptyFields.push('numberOfPeople')
+    // }
 
-    if(!cuisine){
-        emptyFields.push('cuisine')
-    }
+    // if(!cuisine){
+    //     emptyFields.push('cuisine')
+    // }
 
-    if(!bio){
-        emptyFields.push('bio')
-    }
+    // if(!bio){
+    //     emptyFields.push('bio')
+    // }
 
-    if(!image){
-        emptyFields.push('image')
-    }
+    // if(!image){
+    //     emptyFields.push('image')
+    // }
 
-    if(emptyFields.length > 0){
-        return res.status(400).json({error: 'Please fill in all fields'})
-    }
+    // if(emptyFields.length > 0){
+    //     return res.status(400).json({error: 'Please fill in all fields'})
+    // }
 
-    if(numberOfPeople < 1){
-        return res.status(400).json({error: 'Number of family members must be greater than 1'})
-    }
+    // if(numberOfPeople < 1){
+    //     return res.status(400).json({error: 'Number of family members must be greater than 1'})
+    // }
 
     try{
         let imageData = {}
@@ -109,7 +110,8 @@ const updateHost = async (req, res) => {
                         hobby,
                         allergy,
                         language,
-                        numberOfPeople,
+                        adults,
+                        children,
                         cuisine,
                         bio,
                         image: imageData
@@ -122,37 +124,63 @@ const updateHost = async (req, res) => {
             return res.status(400).json({error: 'User not found'})
         }
 
-        console.log(user);
+        //console.log(req.params);
         res.status(200).json(user)
 
     }catch(e){
         console.log(e)
-        res.status(500).json({error: 'A server occurred with this request'})
+        res.status(500).json({error: 'A server errr occurred with this request. Please wait and try again'})
     }
 }
 
 //get a user
 const getUser = async (req, res) => {
-    req.params = req.user._id
+    const {id} = req.params
 
-    if(!mongoose.Types.ObjectId.isValid(req.params)) {
+    if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'Invalid user id'})
     }
 
-    const user = await User.findById(req.params)
+    const user = await User.findById(id)
 
     if(!user){
         return res.status(404).json({error: 'No such user'})
     }
 
     res.status(200).json(user)
-    console.log(user.form)
+    //console.log(user.email)
 
 }
+
+//get hosts
+const getHosts = async (req, res) => {
+    const user_id = req.user._id
+    
+    const hosts = await User.find({_id: {$ne:user_id}}).sort({createdAt: -1})
+
+    // const hosts = await User.aggregate(
+    //     [
+    //         {
+    //             $match:
+    //             {
+    //                 $expr:
+    //                 {
+    //                     $ne: [user_id, {$rand: {}}]
+    //                 }
+    //             }
+    //         }
+    //     ]
+    // )
+
+    res.status(200).json(hosts)
+}
+
+
 
 module.exports = {
     signupUser,
     loginUser,
     updateHost,
-    getUser
+    getUser,
+    getHosts
 }

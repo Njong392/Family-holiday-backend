@@ -48,7 +48,10 @@ const userSchema = new Schema({
             language: {
                 type: [String]
             },
-            numberOfPeople: {
+            adults: {
+                type: Number
+            },
+            children: {
                 type: Number
             },
             cuisine: {
@@ -69,7 +72,7 @@ const userSchema = new Schema({
             }
         }
     ]
-})
+}, {timestamps: true})
 
 //static sign up meethod
 userSchema.statics.signup = async function(first_name, last_name, country, city, email, password, confirm_password){
