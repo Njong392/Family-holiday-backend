@@ -105,7 +105,7 @@ const updateHost = async (req, res) => {
             {_id: req.params}
         )
 
-        if(user.form.find(item => item.role === 'host')){
+        if(user.host.find(item => item.role === 'host')){
             return res.status(400).json({error: 'I think you have already filled this form'})
         } 
         else{
@@ -113,7 +113,7 @@ const updateHost = async (req, res) => {
                 {_id: req.params},
                 {
                     $push: {
-                        form: {
+                        host: {
                             role: 'host',
                             hobby,
                             allergy,
