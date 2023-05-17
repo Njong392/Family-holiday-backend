@@ -101,24 +101,33 @@ const updateHost = async (req, res) => {
             console.log(imageData)
         }
 
-        const user = await User.findOneAndUpdate(
-            {_id: req.params},
-            {
-                $push: {
-                    form: {
-                        role: 'host',
-                        hobby,
-                        allergy,
-                        language,
-                        adults,
-                        children,
-                        cuisine,
-                        bio,
-                        image: imageData
+        let user = await User.findOne(
+            {_id: req.params}
+        )
+
+        if(user.form.find(item => item.role === 'host')){
+            return res.status(400).json({error: 'I think you have already filled this form'})
+        } 
+        else{
+            user = await User.findOneAndUpdate(
+                {_id: req.params},
+                {
+                    $push: {
+                        form: {
+                            role: 'host',
+                            hobby,
+                            allergy,
+                            language,
+                            adults,
+                            children,
+                            cuisine,
+                            bio,
+                            image: imageData
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
 
         if(!user){
             return res.status(400).json({error: 'User not found'})
