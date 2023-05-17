@@ -71,6 +71,44 @@ const userSchema = new Schema({
                 }
             }
         }
+    ],
+    guest: [
+        {
+            role: {
+                type: String
+            },
+            arrival: {
+                type: Date
+            },
+            departure: {
+                type: Date
+            },
+            adults:{
+                type: Number
+            },
+            children: { 
+                type: Number
+            },
+            language: {
+                type: [String]
+            },
+            cuisine: {
+                type: String
+            },
+            bio: {
+                type: String
+            },
+            image: {
+                public_id: {
+                    type: String,
+                    required: true
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }
+        }
     ]
 }, {timestamps: true})
 
