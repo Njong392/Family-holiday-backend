@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const {uploadTocloudinary} = require('../services/cloudinary')
 
 const createToken = (_id) => {
-    return jwt.sign({_id: _id}, process.env.SECRET, { expiresIn: '2d'})
+    return jwt.sign({_id: _id}, process.env.SECRET)
 }
 
 //sign up user
@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
 const updateHost = async (req, res) => {
     req.params = req.user._id
 
-    let {hobby, allergy, language, adults,children, cuisine,bio,  image } = req.body
+    let {hobby, allergy, language, adults,children,pet, cuisine,bio,  image } = req.body
 
     // let emptyFields = []
 
@@ -95,31 +95,33 @@ const updateHost = async (req, res) => {
             return res.status(404).json({error: 'No such user'})
         }
 
-        if (image) {
-            const results = await uploadTocloudinary(image, 'family_users')
-            imageData = results
-            console.log(imageData)
-        }
-
         let user = await User.findOne(
             {_id: req.params}
         )
 
-        if(user.host.find(item => item.role === 'host')){
-            return res.status(400).json({error: 'I think you have already filled this form'})
+        if(user.form.find(item => item.role === 'host')){
+            return res.status(400).json({error: 'You can only fill this form once'})
         } 
         else{
+
+             if (image) {
+            const results = await uploadTocloudinary(image, 'family_users')
+            imageData = results
+            console.log(imageData)
+            }
+            
             user = await User.findOneAndUpdate(
                 {_id: req.params},
                 {
                     $push: {
-                        host: {
+                        form: {
                             role: 'host',
                             hobby,
                             allergy,
                             language,
                             adults,
                             children,
+                            pet,
                             cuisine,
                             bio,
                             image: imageData

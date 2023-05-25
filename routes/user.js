@@ -12,6 +12,9 @@ router.post('/signup', signupUser)
 //login route
 router.post('/login', loginUser)
 
+//get specific user
+router.get('/:id', getUser)
+
 router.use(requireAuth)
 
 //get hosts/discovery page
@@ -20,7 +23,6 @@ router.get('/', getHosts)
 //update user info
 router.patch('/:id', updateHost)
 
-//get specific user
-router.get('/:id', getUser)
+
 
 module.exports = router
