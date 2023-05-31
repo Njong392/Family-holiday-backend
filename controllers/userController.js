@@ -4,7 +4,7 @@ const { mongoose  } = require('mongoose')
 const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 //const cookieParser = require('cookie-parser')
-const {uploadTocloudinary} = require('../services/cloudinary')
+const {uploadToCloudinary} = require('../services/cloudinary')
 
 const createToken = (_id) => {
     return jwt.sign({_id: _id}, process.env.SECRET)
@@ -45,48 +45,10 @@ const loginUser = async (req, res) => {
 }
 
 //update a user with host info
-const updateHost = async (req, res) => {
+const updateUser = async (req, res) => {
     req.params = req.user._id
 
     let {hobby, allergy, language, adults,children,pet, cuisine,bio,  image } = req.body
-
-    // let emptyFields = []
-
-    // if(!hobby){
-    //     emptyFields.push('hobby')
-    // }
-
-    // if(!allergy){
-    //     emptyFields.push('allergy')
-    // }
-
-    // if(!language){
-    //     emptyFields.push('language')
-    // }
-
-    // if(!numberOfPeople){
-    //     emptyFields.push('numberOfPeople')
-    // }
-
-    // if(!cuisine){
-    //     emptyFields.push('cuisine')
-    // }
-
-    // if(!bio){
-    //     emptyFields.push('bio')
-    // }
-
-    // if(!image){
-    //     emptyFields.push('image')
-    // }
-
-    // if(emptyFields.length > 0){
-    //     return res.status(400).json({error: 'Please fill in all fields'})
-    // }
-
-    // if(numberOfPeople < 1){
-    //     return res.status(400).json({error: 'Number of family members must be greater than 1'})
-    // }
 
     try{
         let imageData = {}
@@ -105,8 +67,7 @@ const updateHost = async (req, res) => {
         else{
 
              if (image) {
-            const results = await uploadTocloudinary(image, 'family_users')
-            imageData = results
+            const imageData = await uploadToCloudinary(image, 'family_users')
             console.log(imageData)
             }
             
@@ -191,7 +152,7 @@ const getHosts = async (req, res) => {
 module.exports = {
     signupUser,
     loginUser,
-    updateHost,
+    updateUser,
     getUser,
     getHosts
 }

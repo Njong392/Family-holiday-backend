@@ -1,27 +1,41 @@
 const Accommodation = require('../models/accomodationModel')
 const mongoose = require('mongoose')
+const { uploadToCloudinary } = require('../services/cloudinary')
 
 //create an accommodation
 const createAccommodation = async(req, res) => {
-    const {country, city, rooms, beds, bathrooms, maxOfGuests, durationOfStay, houseRules,pricePerNight} = req.body
+    const {country, city, bedrooms, beds, bathrooms, maxOfGuests, arrivalDate,departureDate,image, houseRules,pricePerNight} = req.body
 
     //add doc to db
     try{
-        const user_id = req.user_id
+        let imageData = {}
+
+        if(image){
+            const imageData = await uploadToCloudinary(image, 'family_accommodation')
+            console.log(imageData)
+        }
+
+        const user_id = req.user._id
         const accommodation = await Accommodation.create({
             country,
             city,
-            description: [rooms, beds, bathrooms],
+            bedrooms, 
+            beds, 
+            bathrooms,
             maxOfGuests,
-            durationOfStay,
+            arrivalDate,
+            departureDate,
             houseRules,
+            image: imageData,
             pricePerNight,
             user_id
         })
 
         res.status(200).json(accommodation)
+        console.log(imageData)
     } catch(error){
         res.status(400).json({error: error.message})
+        console.log(error)
     }
 }
 

@@ -1,7 +1,7 @@
 const express = require('express')
 
 //controller functions
-const { signupUser, loginUser, updateHost, getUser, getHosts} = require('../controllers/userController')
+const { signupUser, loginUser, updateUser, getUser, getHosts} = require('../controllers/userController')
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router()
@@ -21,7 +21,7 @@ router.use(requireAuth)
 router.get('/', getHosts)
 
 //update user info
-router.patch('/:id', updateHost)
+router.patch('/:id', updateUser)
 
 
 
