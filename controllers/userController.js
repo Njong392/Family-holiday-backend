@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
 const updateUser = async (req, res) => {
     req.params = req.user._id
 
-    let {hobby, allergy, language, adults,children,pet, cuisine,bio,  image } = req.body
+    let {hobby, allergy, language, adults,children,pet, cuisine,bio, image } = req.body
 
     try{
         let imageData = {}
@@ -67,7 +67,8 @@ const updateUser = async (req, res) => {
         else{
 
              if (image) {
-            const imageData = await uploadToCloudinary(image, 'family_users')
+            const results = await uploadToCloudinary(image, 'family_users')
+            imageData = results
             console.log(imageData)
             }
             
