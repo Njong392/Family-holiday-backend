@@ -11,7 +11,8 @@ const createAccommodation = async(req, res) => {
         let imageData = {}
 
         if(image){
-            const imageData = await uploadToCloudinary(image, 'family_accommodation')
+            const results = await uploadToCloudinary(image, 'family_accommodation')
+            imageData = results
             console.log(imageData)
         }
 

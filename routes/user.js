@@ -1,7 +1,7 @@
 const express = require('express')
 
 //controller functions
-const { signupUser, loginUser, updateUser, getUser, getHosts} = require('../controllers/userController')
+const { signupUser, loginUser, updateUser, getUser, getHosts, verifyEmail} = require('../controllers/userController')
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router()
@@ -14,6 +14,9 @@ router.post('/login', loginUser)
 
 //get specific user
 router.get('/:id', getUser)
+
+//verify email
+router.post('/verify-email', verifyEmail)
 
 router.use(requireAuth)
 

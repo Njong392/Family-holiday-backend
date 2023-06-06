@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const crypto = require('crypto');
+const { sendVerficationMail } = require('../utils/sendVerificationMail');
 
 const Schema = mongoose.Schema
 
@@ -74,7 +76,14 @@ const userSchema = new Schema({
                 }
             }
         }
-    ]
+    ],
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailToken: {
+        type: String
+    }                             
 }, {timestamps: true})
 
 //static sign up meethod
@@ -107,7 +116,9 @@ userSchema.statics.signup = async function(first_name, last_name, country, city,
     const hash = await bcrypt.hash(password, salt)
 
 
-    const user = await this.create({first_name, last_name, country, city, email, password: hash, confirm_password: hash})
+    const user = await this.create({first_name, last_name, country, city, email, password: hash, confirm_password: hash, emailToken: crypto.randomBytes(64).toString('hex')})
+
+    sendVerficationMail(user)
 
     return user
 }

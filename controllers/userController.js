@@ -21,7 +21,7 @@ const signupUser = async (req, res) => {
         //create a token
         const token = createToken(user._id)
 
-        res.status(200).json({email, token, id:user._id})
+        res.status(200).json({email, token, id:user._id, isVerified: user.isVerified})
     } catch(error){
         res.status(400).json({error: error.message})
     }
@@ -37,7 +37,7 @@ const loginUser = async (req, res) => {
         //create a token
         const token = createToken(user._id)
 
-        res.status(200).json({email, token, id:user._id})
+        res.status(200).json({email, token, id:user._id, isVerified: user.isVerified})
         
     } catch(error){
         res.status(400).json({error: error.message})
@@ -131,21 +131,43 @@ const getHosts = async (req, res) => {
     
     const hosts = await User.find({_id: {$ne:user_id}}).sort({createdAt: -1})
 
-    // const hosts = await User.aggregate(
-    //     [
-    //         {
-    //             $match:
-    //             {
-    //                 $expr:
-    //                 {
-    //                     $ne: [user_id, {$rand: {}}]
-    //                 }
-    //             }
-    //         }
-    //     ]
-    // )
-
     res.status(200).json(hosts)
+}
+
+//verify email
+const verifyEmail = async (req, res) => {
+    try{
+        const {emailToken} = req.body
+
+        if(!emailToken){
+            return res.status(404).json("emailToken not found")
+        }
+
+        const user = await User.findOne({emailToken})
+
+        if(user){
+            if(user?.isVerified) {
+                return res.status(400).json("Email already verified")
+            }
+
+            user.emailToken = null
+            user.isVerified = true
+
+            await user.save()
+
+            const token = createToken(user._id)
+
+            return res.status(200).json({
+                token,
+                isVerified: user.isVerified,
+            })
+        } else{
+            res.status(404).json("Email verification failed, invalid token")
+        }
+    } catch(error) {
+        console.log(error)
+        res.status(500).json(error.message)
+    }
 }
 
 
@@ -155,5 +177,6 @@ module.exports = {
     loginUser,
     updateUser,
     getUser,
-    getHosts
+    getHosts,
+    verifyEmail
 }
