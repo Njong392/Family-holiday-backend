@@ -12,10 +12,11 @@ const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router()
 
+router.use(requireAuth)
+
 //get all accommodations
 router.get('/', getAccommodations)
 
-router.use(requireAuth)
 
 //Create a new workout
 router.post('/', createAccommodation)

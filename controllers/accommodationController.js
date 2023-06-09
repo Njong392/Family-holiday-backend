@@ -42,10 +42,15 @@ const createAccommodation = async(req, res) => {
 
 //get all accommodation
 const getAccommodations = async (req, res) => {
-    const user_id = req.user_id
-    const accommodations = await Accommodation.find({user_id}).sort({createdAt: -1})
+    //const user_id = req.user._id
+    const accommodations = await Accommodation.find().sort({createdAt: -1})
+
+    if(!accommodations){
+        return res.status(404).json({error: 'No such accommodations'})
+    }
 
     res.status(200).json(accommodations)
+    //console.log(user_id)
 
 }
 
@@ -57,13 +62,13 @@ const getAccommodation = async (req, res) => {
         return res.status(404).json({error: 'No such id'})
     }
 
-    const accomodation = await Accommodation.findById(id)
+    const accommodation = await Accommodation.findById(id)
 
-    if(!accomodation){
+    if(!accommodation){
         return res.status(404).json({error: 'No such accommodation'})
     }
 
-    res.status(200).json(accomodation)
+    res.status(200).json(accommodation)
 }
 
 //update an accommodation
