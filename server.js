@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const userRoutes = require('./routes/user')
 const accommodationRoutes = require('./routes/accommodations')
+const savedAccommodationRoutes = require('./routes/savedAccommodations')
 
 //initialize app
 const app = express();
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 //routes
 app.use('/api/user', userRoutes)
 app.use('/api/accommodation', accommodationRoutes)
+app.use('/api/savedAccommodation', savedAccommodationRoutes)
 
 //connect to the db
 mongoose.connect(process.env.MONGO_URI)

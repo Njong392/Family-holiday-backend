@@ -40,6 +40,10 @@ const accommodationSchema = new Schema({
         type: [String],
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     // amenities: [
     //     {
     //         type: Object

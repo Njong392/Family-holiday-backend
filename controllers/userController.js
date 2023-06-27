@@ -61,7 +61,7 @@ const updateUser = async (req, res) => {
             {_id: req.params}
         )
 
-        if(user.form.find(item => item.role === 'host')){
+        if(user.form.find(item => item.isFilled === 'true')){
             return res.status(400).json({error: 'You can only fill this form once'})
         } 
         else{
@@ -77,7 +77,7 @@ const updateUser = async (req, res) => {
                 {
                     $push: {
                         form: {
-                            role: 'host',
+                            isFilled: 'true',
                             hobby,
                             allergy,
                             language,
@@ -129,7 +129,7 @@ const getUser = async (req, res) => {
 const getHosts = async (req, res) => {
     const user_id = req.user._id
     
-    const hosts = await User.find({_id: {$ne:user_id}}).sort({createdAt: -1})
+    const hosts = await User.find({$and : [{_id: {$ne:user_id}}, {isHost: true}]}).sort({createdAt: -1})
 
     res.status(200).json(hosts)
 }

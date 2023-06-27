@@ -1,10 +1,11 @@
 const Accommodation = require('../models/accomodationModel')
+const User = require('../models/userModel')
 const mongoose = require('mongoose')
 const { uploadToCloudinary } = require('../services/cloudinary')
 
 //create an accommodation
 const createAccommodation = async(req, res) => {
-    const {country, city, bedrooms, beds, bathrooms, maxOfGuests, arrivalDate,departureDate,image, houseRules,pricePerNight} = req.body
+    const {country, city, bedrooms, beds, bathrooms, maxOfGuests, arrivalDate,departureDate,image, houseRules,description, pricePerNight} = req.body
 
     //add doc to db
     try{
@@ -27,10 +28,15 @@ const createAccommodation = async(req, res) => {
             arrivalDate,
             departureDate,
             houseRules,
+            description,
             image: imageData,
             pricePerNight,
             user_id
         })
+
+        const user = await User.findById(user_id)
+        user.isHost = true
+        await user.save()
 
         res.status(200).json(accommodation)
         console.log(imageData)
@@ -40,17 +46,19 @@ const createAccommodation = async(req, res) => {
     }
 }
 
-//get all accommodation
 const getAccommodations = async (req, res) => {
-    //const user_id = req.user._id
-    const accommodations = await Accommodation.find().sort({createdAt: -1})
+    
+    const userId = req.query.userId;
+
+    const accommodations = await Accommodation.find({user_id: userId});
 
     if(!accommodations){
         return res.status(404).json({error: 'No such accommodations'})
     }
 
     res.status(200).json(accommodations)
-    //console.log(user_id)
+ 
+    
 
 }
 

@@ -38,7 +38,7 @@ const userSchema = new Schema({
     },
     form : [
         {   
-            role: {
+            isFilled: {
                 type: String
             },
             hobby: {
@@ -78,6 +78,10 @@ const userSchema = new Schema({
         }
     ],
     isVerified: {
+        type: Boolean,
+        default: false
+    },
+    isHost: {
         type: Boolean,
         default: false
     },
