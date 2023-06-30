@@ -18,10 +18,10 @@ router.get('/:id', getUser)
 //verify email
 router.post('/verify-email', verifyEmail)
 
-router.use(requireAuth)
-
 //get hosts/discovery page
 router.get('/', getHosts)
+
+router.use(requireAuth)
 
 //update user info
 router.patch('/:id', updateUser)

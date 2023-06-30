@@ -127,12 +127,14 @@ const getUser = async (req, res) => {
 
 //get hosts
 const getHosts = async (req, res) => {
-    const user_id = req.user._id
+
     
-    const hosts = await User.find({$and : [{_id: {$ne:user_id}}, {isHost: true}]}).sort({createdAt: -1})
+    const hosts = await User.find({isHost: true}).sort({createdAt: -1})
 
     res.status(200).json(hosts)
 }
+
+
 
 //verify email
 const verifyEmail = async (req, res) => {

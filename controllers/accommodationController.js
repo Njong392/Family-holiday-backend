@@ -67,7 +67,7 @@ const getAccommodation = async (req, res) => {
     const {id} = req.params
 
     if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({error: 'No such id'})
+        return res.status(404).json({error: 'yada yada'})
     }
 
     const accommodation = await Accommodation.findById(id)
@@ -115,10 +115,34 @@ const deleteAccommodation = async(req, res) => {
     res.status(200).json(accommodation)
 }
 
+//get hosts based on filter
+const getAccommodationsByFilter = async(req, res) => {
+    const destination = req.query.destination
+    const numberOfGuests = req.query.numberOfGuests
+    const budget = req.query.budget
+    const arrivalDate = req.query.arrivalDate
+    const departureDate = req.query.departureDate
+
+    const range = budget + 100
+
+    try{
+        const filteredAccommodations = await Accommodation.find({$or : [{country: destination},{maxOfGuests: numberOfGuests}, {pricePerNight: {$in: [budget, range]}}, {arrivalDate: arrivalDate}, {departureDate: departureDate}]}).sort({createdAt: -1})
+
+        res.status(200).json(filteredAccommodations)
+        console.log(filteredAccommodations)
+    } catch(error){
+        res.status(400).json({error: error.message})
+    }
+
+ 
+    
+}
+
 module.exports = {
    createAccommodation,
    getAccommodations,
    getAccommodation,
    updateAccommodation,
-   deleteAccommodation 
+   deleteAccommodation,
+   getAccommodationsByFilter
 }
