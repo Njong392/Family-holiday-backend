@@ -21,6 +21,7 @@
     "mongoose": "^7.0.4",
     "nodemailer": "^6.9.3",
     "nodemon": "^2.0.22",
+    "socket.io": "^4.7.1",
     "validator": "^13.9.0"
   }
 }

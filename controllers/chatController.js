@@ -5,6 +5,7 @@ const User = require('../models/userModel')
 //access a chat or create a new chat
 const accessChat = async(req, res) => {
   const {sender_id} =  req.body 
+   console.log(sender_id)
 
   if(!sender_id) {
     return res.status(400).json({error: 'Sender id required'})
@@ -33,7 +34,7 @@ const accessChat = async(req, res) => {
             const fullChat = await Chat.findOne({_id: createdChat._id}).populate('users','-password')
 
             res.status(200).send(fullChat)
-            console.log(sender_id)
+           console.log(fullChat)
         } catch(error){
             
             res.status(400).send({error: error.message})

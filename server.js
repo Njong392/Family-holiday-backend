@@ -8,6 +8,7 @@ const userRoutes = require('./routes/user')
 const accommodationRoutes = require('./routes/accommodations')
 const savedAccommodationRoutes = require('./routes/savedAccommodations')
 const chatRoutes = require('./routes/chat')
+const messageRoutes = require('./routes/message')
 
 //initialize app
 const app = express();
@@ -30,9 +31,10 @@ app.use('/api/user', userRoutes)
 app.use('/api/accommodation', accommodationRoutes)
 app.use('/api/savedAccommodation', savedAccommodationRoutes)
 app.use('/api/chat', chatRoutes)
+app.use('/api/message', messageRoutes)
 
 //connect to the db
-mongoose.connect(process.env.MONGO_URI)
+const server = mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         //listen for requests
         app.listen(process.env.PORT, () => {
@@ -42,3 +44,21 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((error) => {
         console.log(error)
     })
+
+const io = require('socket.io')(server, {
+    pingTimeout: 60000,
+    cors:{
+        origin: 'http://localhost:5173'
+    }
+})
+
+io.on('connection', (socket) => {
+    console.log('connected to socket.io')
+
+    socket.on('setup', (userData) => {
+        //create a room for particular user
+        socket.join(userData._id)
+        console.log('joined room', userData._id)
+        socket.emit('connected')
+    })
+})
