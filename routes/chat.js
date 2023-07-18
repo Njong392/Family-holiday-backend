@@ -1,19 +1,18 @@
-const express = require('express')
-const requireAuth = require('../middleware/requireAuth')
-const {accessChat, fetchChats} = require('../controllers/chatController')
+const express = require("express");
+const requireAuth = require("../middleware/requireAuth");
+const { accessChat, fetchChats } = require("../controllers/chatController");
 
-const router = express.Router()
+const router = express.Router();
 
 //controller fxns
 
-
 //middleware
-router.use(requireAuth)
+router.use(requireAuth);
 
 //access a chat or create a new chat
-router.post('/', accessChat)
+router.post("/", accessChat);
 
 //get all chats
-router.get('/', fetchChats )
+router.get("/", fetchChats);
 
-module.exports = router
+module.exports = router;

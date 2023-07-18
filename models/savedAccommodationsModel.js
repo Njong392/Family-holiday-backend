@@ -1,14 +1,14 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
-const savedAccommodationSchema= new Schema({
-    accommodation:{
-        type: Object,
-    },
-    user_id:{
-        type: String,
-    }
-})
+const savedAccommodationSchema = new Schema({
+  accommodation: {
+    type: Object,
+  },
+  user_id: {
+    type: String,
+  },
+});
 
-module.exports = mongoose.model('savedAccommodation', savedAccommodationSchema)
+module.exports = mongoose.model("savedAccommodation", savedAccommodationSchema);
