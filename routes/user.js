@@ -1,31 +1,36 @@
-const express = require('express')
+const express = require("express");
 
 //controller functions
-const { signupUser, loginUser, updateUser, getUser, getHosts, verifyEmail} = require('../controllers/userController')
-const requireAuth = require('../middleware/requireAuth')
+const {
+  signupUser,
+  loginUser,
+  updateUser,
+  getUser,
+  getHosts,
+  verifyEmail,
+} = require("../controllers/userController");
+const requireAuth = require("../middleware/requireAuth");
 
-const router = express.Router()
+const router = express.Router();
 
 //signup router
-router.post('/signup', signupUser)
+router.post("/signup", signupUser);
 
 //login route
-router.post('/login', loginUser)
+router.post("/login", loginUser);
 
 //get specific user
-router.get('/:id', getUser)
+router.get("/:id", getUser);
 
 //verify email
-router.post('/verify-email', verifyEmail)
+router.post("/verify-email", verifyEmail);
 
 //get hosts/discovery page
-router.get('/', getHosts)
+router.get("/", getHosts);
 
-router.use(requireAuth)
+router.use(requireAuth);
 
 //update user info
-router.patch('/:id', updateUser)
+router.patch("/:id", updateUser);
 
-
-
-module.exports = router
+module.exports = router;

@@ -1,19 +1,19 @@
-const express = require('express')
+const express = require("express");
 
 const {
-    createSavedAccommodation,
-    deleteSavedAccommodation
-} = require('../controllers/savedAccommodationsController')
+  createSavedAccommodation,
+  deleteSavedAccommodation,
+} = require("../controllers/savedAccommodationsController");
 
-const requireAuth = require('../middleware/requireAuth')
-const router = express.Router()
+const requireAuth = require("../middleware/requireAuth");
+const router = express.Router();
 
-router.use(requireAuth)
+router.use(requireAuth);
 
 //add an accommodation to the saved accommodations
-router.post('/', createSavedAccommodation)
+router.post("/", createSavedAccommodation);
 
 //delete a saved accommodation
-router.delete('/:id', deleteSavedAccommodation)
+router.delete("/:id", deleteSavedAccommodation);
 
-module.exports = router
+module.exports = router;
