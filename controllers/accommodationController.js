@@ -62,20 +62,25 @@ const createAccommodation = async (req, res) => {
 const getAccommodations = async (req, res) => {
   const userId = req.query.userId;
 
-  const accommodations = await Accommodation.find({ user_id: userId });
+  try{
+    const accommodations = await Accommodation.find({ user_id: userId });
 
   if (!accommodations) {
     return res.status(404).json({ error: "No such accommodations" });
   }
 
   res.status(200).json(accommodations);
+  } catch(error){
+    return res.status(500).json({ error: error.message })
+  }
 };
 
 //get single accommodation
 const getAccommodation = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  try{
+    if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "yada yada" });
   }
 
@@ -86,13 +91,17 @@ const getAccommodation = async (req, res) => {
   }
 
   res.status(200).json(accommodation);
+  } catch(error){
+    return res.status(500).json({ error: error.message })
+  }
 };
 
 //update an accommodation
 const updateAccommodation = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  try{
+    if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such id" });
   }
 
@@ -108,13 +117,17 @@ const updateAccommodation = async (req, res) => {
   }
 
   res.status(200).json(accommodation);
+  } catch(error){
+    return res.status(500).json({ error: error.message })
+  }
 };
 
 //delete an accommodation
 const deleteAccommodation = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+ try{
+   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such id" });
   }
 
@@ -124,7 +137,12 @@ const deleteAccommodation = async (req, res) => {
     return res.status(400).json({ error: "No such accommodation" });
   }
 
+  
   res.status(200).json(accommodation);
+ } catch(error){
+   return res.status(500).json({ error: error.message })
+ }
+
 };
 
 //get hosts based on filter
@@ -135,14 +153,14 @@ const getAccommodationsByFilter = async (req, res) => {
   const arrivalDate = req.query.arrivalDate;
   const departureDate = req.query.departureDate;
 
-  const range = budget + 100;
+  const range = 0;
 
   try {
     const filteredAccommodations = await Accommodation.find({
       $or: [
         { country: destination },
         { maxOfGuests: numberOfGuests },
-        { pricePerNight: { $in: [budget, range] } },
+        { pricePerNight: { $in: [range, budget] } },
         { arrivalDate: arrivalDate },
         { departureDate: departureDate },
       ],
