@@ -37,6 +37,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    default_profile: {
+      type: String,
+      default: ""
+    },
     form: [
       {
         isFilled: {
@@ -86,6 +90,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isDisabled:{
+      type: Boolean,
+      default: false
+    },
     emailToken: {
       type: String,
     },
@@ -133,26 +141,48 @@ userSchema.statics.signup = async function (
   const exists = await this.findOne({ email });
 
   if (exists) {
-    throw Error("Email already in use");
+    if(exists.isDisabled){
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+
+      exists.isDisabled = false
+      exists.first_name = first_name
+      exists.last_name = last_name
+      exists.country = country
+      exists.city = city
+      exists.password = hash
+      exists.confirm_password = hash
+
+    await exists.save()
+
+    return exists
+    
+    } else{
+       throw Error("Oops. This email already exists")
+    }
+
   }
+  else{
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
 
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(password, salt);
-
-  const user = await this.create({
-    first_name,
-    last_name,
-    country,
-    city,
-    email,
-    password: hash,
-    confirm_password: hash,
-    emailToken: crypto.randomBytes(64).toString("hex"),
+    const user = await this.create({
+      first_name,
+      last_name,
+      country,
+      city,
+      email,
+      password: hash,
+      confirm_password: hash,
+      emailToken: crypto.randomBytes(64).toString("hex"),
   });
 
   sendVerficationMail(user);
-
   return user;
+
+  }
+
+
 };
 
 //static login method
@@ -167,13 +197,18 @@ userSchema.statics.login = async function (email, password) {
     throw Error("This email does not exist. Please check that it is correct");
   }
 
-  const match = await bcrypt.compare(password, user.password);
+  if(user.isDisabled){
+    throw Error("This email has been deactivated. Try creating your account again.")
+  } else{
+    const match = await bcrypt.compare(password, user.password);
 
   if (!match) {
     throw Error("Invalid password");
   }
 
   return user;
+  }
+
 };
 
 module.exports = mongoose.model("user", userSchema);

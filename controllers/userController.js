@@ -59,7 +59,7 @@ const loginUser = async (req, res) => {
       .status(200)
       .json({ email, token, id: user._id, isVerified: user.isVerified });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: "Oops. Some server error occurred. Please try again" });
   }
 };
 
@@ -117,8 +117,8 @@ const updateUser = async (req, res) => {
 
     //console.log(req.params);
     res.status(200).json(user);
-  } catch (e) {
-    console.log(e);
+  } catch {
+   
     res
       .status(500)
       .json({
@@ -132,7 +132,8 @@ const updateUser = async (req, res) => {
 const getUser = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+ try{
+   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Invalid user id" });
   }
 
@@ -144,11 +145,14 @@ const getUser = async (req, res) => {
 
   res.status(200).json(user);
   //console.log(user.email)
+ } catch (error) {
+   res.status(500).json(error.message);
+ }
 };
 
 //get hosts
 const getHosts = async (req, res) => {
-  const hosts = await User.find({ isHost: true }).sort({ createdAt: -1 });
+  const hosts = await User.find({$and: [{ isHost: true }, {isDisabled: false}]}).sort({ createdAt: -1 });
 
   res.status(200).json(hosts);
 };

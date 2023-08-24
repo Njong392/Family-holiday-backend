@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const express = require("express");
@@ -9,8 +10,9 @@ const accommodationRoutes = require("./routes/accommodations");
 const savedAccommodationRoutes = require("./routes/savedAccommodations");
 const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
+const reservationRoutes = require("./routes/reservation");
 
-//initialize app
+
 connectDB();
 const app = express();
 
@@ -31,12 +33,14 @@ app.use((req, res, next) => {
 app.use("/api/user", userRoutes);
 app.use("/api/accommodation", accommodationRoutes);
 app.use("/api/savedAccommodation", savedAccommodationRoutes);
-app.use("/api/chat", chatRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/chat", chatRoutes)
+app.use("/api/message", messageRoutes)
+app.use("/api/reservation", reservationRoutes)
+
 
 //listens for requests
 const server = app.listen(process.env.PORT, () => {
-  console.log("Connected to the db and listening on port", process.env.PORT);
+  console.log("Listening on port", process.env.PORT);
 });
 
 const io = require("socket.io")(server, {
@@ -45,6 +49,8 @@ const io = require("socket.io")(server, {
     origin: "http://localhost:5173",
   },
 });
+
+
 
 io.on("connection", (socket) => {
   console.log("connected to socket.io");
@@ -79,8 +85,8 @@ io.on("connection", (socket) => {
     if (!chat.users) return console.log("Chat.users not defined");
 
     chat.users.forEach((user) => {
-      if (user.id === newMessageReceived.sender._id) return;
-      socket.in(user.id).emit("message received", newMessageReceived);
+      if (user._id === newMessageReceived.sender._id) return;
+      socket.in(user._id).emit("message received", newMessageReceived);
     });
   });
 

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const accommodationSchema = new Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
     country: {
       type: String,
       required: true,
@@ -45,11 +49,6 @@ const accommodationSchema = new Schema(
       type: String,
       required: true,
     },
-    // amenities: [
-    //     {
-    //         type: Object
-    //     }
-    // ],
     pricePerNight: {
       type: Number,
       required: true,
@@ -68,6 +67,10 @@ const accommodationSchema = new Schema(
       type: String,
       required: true,
     },
+    availability:{
+      type: Boolean,
+      default: true
+    }
   },
   { timestamps: true },
 );

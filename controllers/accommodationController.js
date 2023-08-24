@@ -6,6 +6,7 @@ const { uploadToCloudinary } = require("../services/cloudinary");
 //create an accommodation
 const createAccommodation = async (req, res) => {
   const {
+    title,
     country,
     city,
     bedrooms,
@@ -32,6 +33,7 @@ const createAccommodation = async (req, res) => {
 
     const user_id = req.user._id;
     const accommodation = await Accommodation.create({
+      title,
       country,
       city,
       bedrooms,
@@ -52,7 +54,7 @@ const createAccommodation = async (req, res) => {
     await user.save();
 
     res.status(200).json(accommodation);
-    console.log(imageData);
+    
   } catch (error) {
     res.status(400).json({ error: error.message });
     console.log(error);
@@ -167,7 +169,6 @@ const getAccommodationsByFilter = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     res.status(200).json(filteredAccommodations);
-    console.log(filteredAccommodations);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
