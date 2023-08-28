@@ -152,6 +152,7 @@ userSchema.statics.signup = async function (
       exists.city = city
       exists.password = hash
       exists.confirm_password = hash
+     
 
     await exists.save()
 

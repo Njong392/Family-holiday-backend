@@ -8,6 +8,7 @@ const {
   getUser,
   getHosts,
   verifyEmail,
+  deactivateUser
 } = require("../controllers/userController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -32,5 +33,8 @@ router.use(requireAuth);
 
 //update user info
 router.patch("/:id", updateUser);
+
+//deactivate user
+router.post("/deactivate", deactivateUser);
 
 module.exports = router;

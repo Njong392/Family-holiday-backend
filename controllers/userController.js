@@ -63,6 +63,33 @@ const loginUser = async (req, res) => {
   }
 };
 
+//deactivate user
+const deactivateUser = async(req, res) => {
+ 
+  try{
+     const {sender_id} = req.body
+
+    const user = await User.findById(sender_id)
+
+    if(!user){
+      return res.status(400).json({error: "No such user"})
+    } else{
+      user.isDisabled = true
+
+      await user.save()
+
+      res.status(200).json({message: "User deactivated"})
+    }
+  } catch(error){
+     res
+      .status(500)
+      .json({
+        error:
+         error.message
+      });
+  }
+}
+
 //update a user with host info
 const updateUser = async (req, res) => {
   req.params = req.user._id;
@@ -87,7 +114,7 @@ const updateUser = async (req, res) => {
       if (image) {
         const results = await uploadToCloudinary(image, "family_users");
         imageData = results;
-        console.log(imageData);
+        
       }
 
       user = await User.findOneAndUpdate(
@@ -200,4 +227,5 @@ module.exports = {
   getUser,
   getHosts,
   verifyEmail,
+  deactivateUser
 };
