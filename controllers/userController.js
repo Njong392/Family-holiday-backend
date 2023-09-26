@@ -113,7 +113,7 @@ const updateUser = async (req, res) => {
     } else {
       if (image) {
         const results = await uploadToCloudinary(image, "family_users");
-        imageData = results;
+        imageData = results
         
       }
 
@@ -220,6 +220,42 @@ const verifyEmail = async (req, res) => {
   }
 };
 
+//edit user profile
+const editProfile = async (req, res) => {
+  const { fields } = req.body;
+  const id = req.user._id;
+  console.log(fields);
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "No such user" });
+    }
+
+    for (const field in fields) {
+      const key = Object.keys(fields[field])[0];
+      const value = fields[field][key];
+
+      const user = await User.findOne({id})
+
+      const k = [key]
+
+      user.k = value
+
+      await user.save()
+
+      //await User.findOneAndUpdate({ _id: id }, { [key]: value });
+    }
+
+    const editedProfile = await User.findById(id);
+
+    res.status(200).json(editedProfile);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -227,5 +263,6 @@ module.exports = {
   getUser,
   getHosts,
   verifyEmail,
-  deactivateUser
+  deactivateUser,
+  editProfile
 };

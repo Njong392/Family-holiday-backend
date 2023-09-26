@@ -3,20 +3,22 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 
 const reservationSchema = new Schema({
-    guest:{
+    users: [
+        {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
-    },
-    host:{
+    }
+    ],
+    guest: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
     },
     status:{
         type: String,
-        enum: ["pending", "accepted", "rejected", "cancelled"],
+        enum: ["pending","incomplete", "accepted", "rejected", "cancelled"],
         default: "pending"
     },
-    accommodation:{
+    id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Accommodation",
     },
@@ -29,13 +31,13 @@ const reservationSchema = new Schema({
     pricePerNight:{
         type: Number
     },
-    adults:{
+    adultCount:{
         type: Number
     },
-    children:{
+    childrenCount:{
         type: Number
     },
-    infants:{
+    infantCount:{
         type: Number
     }
 })

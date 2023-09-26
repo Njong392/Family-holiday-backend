@@ -11,6 +11,7 @@ const savedAccommodationRoutes = require("./routes/savedAccommodations");
 const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
 const reservationRoutes = require("./routes/reservation");
+const notificationRoutes = require("./routes/notifications");
 
 
 connectDB();
@@ -36,6 +37,7 @@ app.use("/api/savedAccommodation", savedAccommodationRoutes);
 app.use("/api/chat", chatRoutes)
 app.use("/api/message", messageRoutes)
 app.use("/api/reservation", reservationRoutes)
+app.use("/api/notification", notificationRoutes)
 
 
 //listens for requests
@@ -90,8 +92,32 @@ io.on("connection", (socket) => {
     });
   });
 
+  //send a reservation notification
+  socket.on("new reservation", (newReservationReceived) => {
+    var reservation = newReservationReceived;
+
+    if (!reservation.id) return console.log("Accommodation not defined");
+
+    reservation.users.forEach((user) => {
+      if(user._id === newReservationReceived.guest)
+        return
+    socket.in(user._id).emit("reservation received", newReservationReceived);
+  })
+  });
+
+  //send a notification for accepted reservation
+  socket.on("reservation accepted", (reservationAccepted) => {
+    var reservation = reservationAccepted
+
+    // if(!reservation.id) return console.log("Accommodation not defined");
+
+    socket.in(reservationAccepted.guest).emit("reservation accepted", reservationAccepted)
+    console.log("reservation has been accepted")
+  })
+
+    
   socket.off("setup", () => {
-    console.log("user disaconnected");
+    console.log("user disconnected");
     socket.leave(userData.id);
   });
 });

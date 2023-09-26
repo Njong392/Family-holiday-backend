@@ -169,6 +169,7 @@ const getAccommodationsByFilter = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     res.status(200).json(filteredAccommodations);
+    //console.log(filteredAccommodations);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

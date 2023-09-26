@@ -70,7 +70,8 @@ const userSchema = new Schema(
         bio: {
           type: String,
         },
-        image: {
+        image: 
+          {
           public_id: {
             type: String,
             required: true,
@@ -78,8 +79,9 @@ const userSchema = new Schema(
           url: {
             type: String,
             required: true,
-          },
-        },
+          }
+        }
+        
       },
     ],
     isVerified: {
